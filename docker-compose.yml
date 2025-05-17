@@ -1,7 +1,7 @@
 services:
   cryptosignals:
-    image: ghcr.io/erdees/cryptosignals:latest
-    container_name: cryptosignals
+    image: ghcr.io/erdees/cryptosignalsbot:latest
+    container_name: cryptosignalsbot
     restart: unless-stopped
     volumes:
       - h2_data:/app/data
