@@ -17,4 +17,4 @@ ENV BOT_TOKEN=${BOT_TOKEN}
 
 COPY --from=builder /app/target/*.jar app.jar
 
-ENTRYPOINT ["sh", "-c", "java -Dspring.profiles.active=prod -Dtelegram.bot.token=$BOT_TOKEN -Dspring.datasource.password=$POSTGRES_PASSWORD -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dspring.profiles.active=prod -Dtelegram.bot.token=$BOT_TOKEN -jar app.jar"]

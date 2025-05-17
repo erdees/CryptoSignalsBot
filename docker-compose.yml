@@ -3,20 +3,8 @@ services:
     image: ghcr.io/erdees/cryptosignals:latest
     container_name: cryptosignals
     restart: unless-stopped
-    depends_on:
-        - postgres-cr
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
-  postgres-cr:
-    image: postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: cryptosignals
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - h2_data:/app/data
 
 volumes:
-  postgres_data:
+  h2_data:

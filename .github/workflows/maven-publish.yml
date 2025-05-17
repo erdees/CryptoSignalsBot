@@ -52,7 +52,6 @@ jobs:
           privateKey: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           command: |
             cd ~/signalsbot
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" > .env
             docker compose pull
             docker compose down
             docker compose up -d
