@@ -17,8 +17,12 @@ public interface BotHistoryRepository extends JpaRepository<History, Long> {
     @Transactional
     void deleteByTimestampBefore(Timestamp cutoff);
 
-    @Query("SELECT h FROM History h WHERE h.symbol = :symbol AND h.timestamp >= :cutoff ORDER BY h.timestamp ASC")    List<History> findRecentHistory(
+    @Query("SELECT h FROM History h WHERE h.symbol = :symbol AND h.timestamp >= :cutoff ORDER BY h.timestamp ASC")
+    List<History> findRecentHistory(
             @Param("symbol") Symbol symbol,
             @Param("cutoff") Timestamp cutoff
     );
+
+    @Query("SELECT h FROM History h WHERE h.symbol = :symbol ORDER BY h.timestamp DESC LIMIT 1")
+    History findLastBySymbol(@Param("symbol") Symbol symbol);
 }
