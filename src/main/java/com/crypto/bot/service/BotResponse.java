@@ -1,4 +1,3 @@
 package com.crypto.bot.service;
 
-public interface BotResponse {
-}
+public interface BotResponse {}

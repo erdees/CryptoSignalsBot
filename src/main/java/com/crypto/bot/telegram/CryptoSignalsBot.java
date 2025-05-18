@@ -42,8 +42,8 @@ public class CryptoSignalsBot implements SpringLongPollingBot, LongPollingSingle
     @Override
     public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            Long chatId = update.getMessage().getChatId();
-            String input = update.getMessage().getText();
+            var chatId = update.getMessage().getChatId();
+            var input = update.getMessage().getText();
             try {
                 commandHandler.handleCommand(chatId, input);
             } catch (IOException | TelegramApiException e) {

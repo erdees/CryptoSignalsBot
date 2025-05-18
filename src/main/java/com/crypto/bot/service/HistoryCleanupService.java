@@ -17,12 +17,11 @@ public class HistoryCleanupService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HistoryCleanupService.class);
 
-
     private final BotHistoryRepository historyRepository;
 
     @Scheduled(cron = "0 0 * * * *") // Every hour at 00 min
     public void cleanupOldHistory() {
-        Timestamp cutoff = Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)); // 24 hours ago
+        var cutoff = Timestamp.from(Instant.now().minus(7, ChronoUnit.DAYS)); // 24 hours ago
         historyRepository.deleteByTimestampBefore(cutoff);
 
         LOGGER.info("Old history entries deleted before: {}", cutoff);

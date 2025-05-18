@@ -17,8 +17,6 @@ import java.io.ByteArrayInputStream;
 @RequiredArgsConstructor
 public class TelegramNotificationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
-
     private final TelegramClient telegramClient;
 
     public void sendMessage(Long chatId, String text) throws TelegramApiException {
