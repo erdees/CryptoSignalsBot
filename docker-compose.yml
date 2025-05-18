@@ -4,7 +4,4 @@ services:
     container_name: cryptosignalsbot
     restart: unless-stopped
     volumes:
-      - h2_data:/app/data
-
-volumes:
-  h2_data:
+      - ./data:/app/data
