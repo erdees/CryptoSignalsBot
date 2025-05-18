@@ -77,6 +77,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>6.6.13.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.5</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -25,4 +25,11 @@ public interface BotHistoryRepository extends JpaRepository<History, Long> {
 
     @Query("SELECT h FROM History h WHERE h.symbol = :symbol ORDER BY h.timestamp DESC LIMIT 1")
     History findLastBySymbol(@Param("symbol") Symbol symbol);
+
+    @Query("SELECT h FROM History h WHERE h.symbol = :symbol AND h.timestamp BETWEEN :from AND :to ORDER BY h.timestamp ASC")
+    List<History> findBySymbolAndTimestampBetween(
+            @Param("symbol") Symbol symbol,
+            @Param("from") Timestamp from,
+            @Param("to") Timestamp to
+    );
 }

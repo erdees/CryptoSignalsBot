@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -31,7 +32,7 @@ public class PriceChangeMonitorService {
     private static final int MINUTES_INTERVAL = 30;
 
     @Scheduled(fixedRate = 60000)
-    public void checkPriceChange() {
+    public void checkPriceChange() throws TelegramApiException {
         SymbolType symbolType = SymbolType.BTCUSDT;
 
         Symbol symbol = symbolRepository.findBySymbol(symbolType)
