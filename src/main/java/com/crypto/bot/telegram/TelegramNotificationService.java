@@ -29,6 +29,16 @@ public class TelegramNotificationService {
         telegramClient.execute(message);
     }
 
+    public void sendMessageAsync(Long chatId, String text) throws TelegramApiException {
+        var message = SendMessage.builder()
+                .chatId(chatId)
+                .text(text)
+                .parseMode(ParseMode.MARKDOWN)
+                .build();
+
+        telegramClient.executeAsync(message);
+    }
+
     public void sendMessage(Long chatId, byte[] chartBytes, String caption) throws TelegramApiException {
         InputFile inputFile = new InputFile(new ByteArrayInputStream(chartBytes), "image.png");
 

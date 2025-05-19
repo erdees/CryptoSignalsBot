@@ -40,6 +40,9 @@ public class BotSessionService {
             case "/chart" -> {
                 return handleChart();
             }
+            case "/subscribe" -> {
+                return handleSubscribe(session);
+            }
         }
         return new EmptyResponse();
     }
@@ -81,12 +84,34 @@ public class BotSessionService {
         return new PhotoResponse(img, "📊 BTC price over the last 30m", false);
     }
 
+    private TextResponse handleSubscribe(BotSession session) {
+        if (session.isSubscribed()) {
+            setSubscription(session, false);
+            return new TextResponse("""
+                    \uD83D\uDD15 *Notifications are turned off.*
+                    Don’t miss out on important signals! Send */subscribe* to get back in the loop. \uD83D\uDE80""",
+                    false);
+        } else {
+            setSubscription(session, true);
+            return new TextResponse("""
+                    \uD83D\uDD14 *You’re subscribed to notifications!*
+                    Get ready for fresh updates and signals. Want some peace and quiet? Send */subscribe* to opt out. \uD83D\uDE34""",
+                    false);
+        }
+    }
+
+    private void setSubscription(BotSession session, boolean subscribe) {
+        session.setSubscribed(subscribe);
+        sessionRepository.save(session);
+    }
+
     @NotNull
     private BotSession getOrCreateSession(long chatId) {
         return sessionRepository.findById(chatId).orElseGet(() -> {
             var session = new BotSession();
             session.setChatId(chatId);
             session.setBotStarted(true);
+            session.setSubscribed(false);
 
             return sessionRepository.save(session);
         });

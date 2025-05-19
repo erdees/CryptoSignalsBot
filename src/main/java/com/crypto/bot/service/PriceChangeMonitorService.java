@@ -4,6 +4,7 @@ import com.crypto.bot.entity.History;
 import com.crypto.bot.entity.Symbol;
 import com.crypto.bot.entity.SymbolType;
 import com.crypto.bot.repository.BotHistoryRepository;
+import com.crypto.bot.repository.BotSessionRepository;
 import com.crypto.bot.repository.BotSymbolRepository;
 import com.crypto.bot.telegram.TelegramNotificationService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class PriceChangeMonitorService {
 
     private final BotHistoryRepository historyRepository;
     private final BotSymbolRepository symbolRepository;
+    private final BotSessionRepository sessionRepository;
     private final TelegramNotificationService tgNotif;
 
     private static final long PRICE_CHANGE_THRESHOLD = 50000; // $500 in cents
@@ -64,7 +66,15 @@ public class PriceChangeMonitorService {
             );
             LOGGER.info(message);
 
-            tgNotif.sendMessage(Long.valueOf("214066518"), message);
+            sessionRepository.findSubscribedChatIds().forEach(chatId ->
+            {
+                try {
+                    tgNotif.sendMessageAsync(chatId, message);
+                } catch (TelegramApiException e) {
+                    LOGGER.error("Failed to send a notification to subscriber: {}",
+                            e.getLocalizedMessage());
+                }
+            });
         }
     }
 }

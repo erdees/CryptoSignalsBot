@@ -14,4 +14,6 @@ public class BotSession {
     private Long chatId;
 
     private boolean isBotStarted;
+
+    private boolean isSubscribed;
 }
