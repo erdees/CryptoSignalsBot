@@ -95,6 +95,7 @@ public class BotSessionService {
                 *Welcome to CryptoSignalsBot!* \uD83D\uDE80
                 Stay informed about real-time price changes in your favorite cryptocurrencies.
                 We’ll alert you when the market moves significantly — up or down.
+                Just send */subscribe* to get notified about significant market movements! 🔔📉📈
                 
                 Let’s keep an eye on the charts together! \uD83D\uDCCA\uD83D\uDCB0""",
                     false);
