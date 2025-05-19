@@ -28,33 +28,77 @@ public class BotSessionService {
 
     @Transactional
     public BotResponse processInput(long chatId, String input) throws IOException {
-        var session = getOrCreateSession(chatId);
+        var isExist = sessionRepository.existsByChatIdAndIsBotStartedTrue(chatId);
 
-        switch (input) {
-            case "/start" -> {
-                return handleStart();
+        if (!isExist) {
+            if (input.equals("/start")) {
+                var session = getOrCreateSession(chatId);
+                return handleStart(session);
+            } else {
+                return handleNonExist(input);
             }
-            case "/last" -> {
-                return handleLast();
+        } else {
+            var session = getOrCreateSession(chatId);
+
+            switch (input) {
+                case "/start" -> {
+                    return handleStart(session);
+                }
+                case "/last" -> {
+                    return handleLast();
+                }
+                case "/chart" -> {
+                    return handleChart();
+                }
+                case "/subscribe" -> {
+                    return handleSubscribe(session);
+                }
+                case "/stop" -> {
+                    return handleStop(session);
+                }
             }
-            case "/chart" -> {
-                return handleChart();
-            }
-            case "/subscribe" -> {
-                return handleSubscribe(session);
-            }
+            return new EmptyResponse();
         }
-        return new EmptyResponse();
     }
 
-    private static TextResponse handleStart() {
+    private BotResponse handleNonExist(String input) {
+        if (input.contains("/last") ||
+                input.contains("/chart") ||
+                input.contains("/subscribe") ||
+                input.contains("/stop")) {
+            return new TextResponse("""
+                    👋 *Hey there!*
+                    Looks like you haven’t started the bot yet.
+                    To begin, just send */start* — it only takes a second! 🚀
+                    Then you’ll be able to track prices, view charts, and get real-time alerts. 📊💸
+                """, false);
+        } else {
+            return new EmptyResponse();
+        }
+    }
 
-        return new TextResponse("""
+    private TextResponse handleStart(BotSession session) {
+
+        if (session.isBotStarted()) {
+            return new TextResponse("""
+                    *You're already up and running!* 🚀
+                    The bot is active and ready to send you crypto updates.
+                    
+                    Want to start receiving alerts?
+                    Just send */subscribe* to get notified about significant market movements! 🔔📉📈
+                    """,
+                    false);
+        } else {
+            session.setBotStarted(true);
+            sessionRepository.save(session);
+            return new TextResponse("""
                 *Welcome to CryptoSignalsBot!* \uD83D\uDE80
                 Stay informed about real-time price changes in your favorite cryptocurrencies.
                 We’ll alert you when the market moves significantly — up or down.
                 
-                Let’s keep an eye on the charts together! \uD83D\uDCCA\uD83D\uDCB0""", false);
+                Let’s keep an eye on the charts together! \uD83D\uDCCA\uD83D\uDCB0""",
+                    false);
+        }
     }
 
     @NotNull
@@ -105,12 +149,27 @@ public class BotSessionService {
         sessionRepository.save(session);
     }
 
+    private TextResponse handleStop(BotSession session) {
+        session.setBotStarted(false);
+        session.setSubscribed(false);
+        sessionRepository.save(session);
+
+        return new TextResponse("""
+                🛑 *Bot stopped.*
+                You’ve successfully turned off CryptoSignalsBot.
+                You won’t receive any more price updates or alerts.
+                
+                Whenever you're ready to jump back in — just send */start* and we’ll be here! 🚀📈
+                """,
+                false);
+    }
+
     @NotNull
     private BotSession getOrCreateSession(long chatId) {
         return sessionRepository.findById(chatId).orElseGet(() -> {
             var session = new BotSession();
             session.setChatId(chatId);
-            session.setBotStarted(true);
+            session.setBotStarted(false);
             session.setSubscribed(false);
 
             return sessionRepository.save(session);

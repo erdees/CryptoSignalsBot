@@ -12,4 +12,6 @@ public interface BotSessionRepository extends JpaRepository<BotSession, Long> {
 
     @Query("SELECT b.chatId FROM BotSession b WHERE b.isSubscribed = true AND b.isBotStarted = true")
     List<Long> findSubscribedChatIds();
+
+    boolean existsByChatIdAndIsBotStartedTrue(Long chatId);
 }
