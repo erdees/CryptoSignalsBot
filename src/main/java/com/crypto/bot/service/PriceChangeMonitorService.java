@@ -1,7 +1,5 @@
 package com.crypto.bot.service;
 
-import com.crypto.bot.entity.History;
-import com.crypto.bot.entity.Symbol;
 import com.crypto.bot.entity.SymbolType;
 import com.crypto.bot.repository.BotHistoryRepository;
 import com.crypto.bot.repository.BotSessionRepository;
@@ -17,7 +15,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,15 +31,15 @@ public class PriceChangeMonitorService {
     private static final int MINUTES_INTERVAL = 30;
 
     @Scheduled(fixedRate = 60000)
-    public void checkPriceChange() throws TelegramApiException {
-        SymbolType symbolType = SymbolType.BTCUSDT;
+    public void checkPriceChange() {
+        var symbolType = SymbolType.BTCUSDT;
 
-        Symbol symbol = symbolRepository.findBySymbol(symbolType)
-                .orElseThrow(() -> new RuntimeException("Symbol not found: " + symbolType));
-
-        Timestamp cutoff = Timestamp.from(Instant.now().minus(Duration.ofMinutes(MINUTES_INTERVAL)));
-
-        List<History> historyList = historyRepository.findRecentHistory(symbol, cutoff);
+        var symbol = symbolRepository.findBySymbol(symbolType)
+                .orElseThrow(
+                        () -> new RuntimeException("Symbol not found: " + symbolType)
+                );
+        var cutoff = Timestamp.from(Instant.now().minus(Duration.ofMinutes(MINUTES_INTERVAL)));
+        var historyList = historyRepository.findRecentHistory(symbol, cutoff);
 
         if (historyList.size() < 2) {
             return;
@@ -50,7 +47,6 @@ public class PriceChangeMonitorService {
 
         long oldest = historyList.getFirst().getValue();
         long newest = historyList.getLast().getValue();
-
         long diff = newest - oldest;
 
         if (Math.abs(diff) >= PRICE_CHANGE_THRESHOLD) {
