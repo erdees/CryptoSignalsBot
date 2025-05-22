@@ -1,18 +1,19 @@
 package com.crypto.bot.telegram;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.io.ByteArrayInputStream;
 
+@Getter
 @Service
 @RequiredArgsConstructor
 public class TelegramNotificationService {
@@ -29,11 +30,14 @@ public class TelegramNotificationService {
         telegramClient.execute(message);
     }
 
-    public void sendMessageAsync(Long chatId, String text) throws TelegramApiException {
+    public void sendMessageAsync(Long chatId,
+                                 String text,
+                                 InlineKeyboardMarkup keyboard) throws TelegramApiException {
         var message = SendMessage.builder()
                 .chatId(chatId)
                 .text(text)
                 .parseMode(ParseMode.MARKDOWN)
+                .replyMarkup(keyboard)
                 .build();
 
         telegramClient.executeAsync(message);

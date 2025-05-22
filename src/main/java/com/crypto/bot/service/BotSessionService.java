@@ -176,4 +176,11 @@ public class BotSessionService {
             return sessionRepository.save(session);
         });
     }
+
+    public void muteNotifications(Long chatId, int minutes) {
+        var session = sessionRepository.findById(chatId).orElseThrow();
+        session.setMuteUntil(Instant.now().plus(Duration.ofMinutes(minutes)));
+
+        sessionRepository.save(session);
+    }
 }

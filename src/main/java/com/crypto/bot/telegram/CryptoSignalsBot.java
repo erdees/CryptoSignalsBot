@@ -1,6 +1,7 @@
 package com.crypto.bot.telegram;
 
 import com.crypto.bot.config.ConfigProperties;
+import com.crypto.bot.service.CallBackHandlerService;
 import com.crypto.bot.service.CommandHandlerService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class CryptoSignalsBot implements SpringLongPollingBot, LongPollingSingle
     private final Logger LOGGER = LoggerFactory.getLogger(CryptoSignalsBot.class);
 
     private final CommandHandlerService commandHandler;
+    private final CallBackHandlerService callbackHandler;
     private final TelegramClient telegramClient;
     private final ConfigProperties config;
 
@@ -42,16 +44,31 @@ public class CryptoSignalsBot implements SpringLongPollingBot, LongPollingSingle
     @Override
     public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            var chatId = update.getMessage().getChatId();
-            var input = update.getMessage().getText();
-            try {
-                commandHandler.handleCommand(chatId, input);
-            } catch (IOException | TelegramApiException e) {
-                LOGGER.error(
-                        "An error occur during message processing: {} ",
-                        e.getMessage()
-                );
-            }
+            handleTextMessage(update);
+        } if (update.hasCallbackQuery()) {
+            handleCallBack(update);
+        }
+    }
+
+    private void handleTextMessage(Update update) {
+        var chatId = update.getMessage().getChatId();
+        var input = update.getMessage().getText();
+        try {
+            commandHandler.handleCommand(chatId, input);
+        } catch (IOException | TelegramApiException e) {
+            LOGGER.error(
+                    "An error occur during message processing: {} ",
+                    e.getMessage()
+            );
+        }
+    }
+
+    private void handleCallBack(Update update) {
+        var chatId = update.getCallbackQuery().getMessage().getChatId();
+        try {
+            callbackHandler.handleCallback(chatId, update);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
         }
     }
 

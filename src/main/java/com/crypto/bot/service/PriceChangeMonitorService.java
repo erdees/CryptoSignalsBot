@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Timestamp;
@@ -62,15 +65,29 @@ public class PriceChangeMonitorService {
             );
             LOGGER.info(message);
 
-            sessionRepository.findSubscribedChatIds().forEach(chatId ->
+            sessionRepository.findActiveSubscribedChatIds(Instant.now()).forEach(chatId ->
             {
                 try {
-                    tgNotif.sendMessageAsync(chatId, message);
+                    tgNotif.sendMessageAsync(chatId, message, formAnswerKeyboard());
                 } catch (TelegramApiException e) {
                     LOGGER.error("Failed to send a notification to subscriber: {}",
                             e.getLocalizedMessage());
                 }
             });
         }
+    }
+
+    private InlineKeyboardMarkup formAnswerKeyboard() {
+
+        return InlineKeyboardMarkup
+                .builder()
+                .keyboardRow(new InlineKeyboardRow(
+                        InlineKeyboardButton.builder().text("\uD83E\uDD2B Snooze 30 min").callbackData("MUTE_30").build(),
+                        InlineKeyboardButton.builder().text("\uD83D\uDE34 Nap 2 hours ").callbackData("MUTE_120").build()
+                ))
+                .keyboardRow(new InlineKeyboardRow(
+                        InlineKeyboardButton.builder().text("\uD83D\uDE05 Put everything back!").callbackData("RESET_ALL").build()
+                ))
+                .build();
     }
 }
