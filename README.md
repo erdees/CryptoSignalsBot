@@ -24,6 +24,6 @@ CryptoSignalsBot is a Spring Boot application that monitors cryptocurrency price
 
 ## 🏞️ Screenshots
 
-
+<img src="image/IMG_5284.png" width="400px"/> <img src="image/IMG_5285.png" width="400px"/>
 
 
