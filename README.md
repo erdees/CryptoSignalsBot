@@ -22,4 +22,8 @@ CryptoSignalsBot is a Spring Boot application that monitors cryptocurrency price
 
 ⚠️ BTCUSDT has increased 📈 by $512.45 over the last 10 minutes.
 
+## 🏞️ Screenshots
+
+
+
 
