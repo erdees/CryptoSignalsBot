@@ -30,7 +30,7 @@ public class PriceChangeMonitorService {
     private final BotSessionRepository sessionRepository;
     private final TelegramNotificationService tgNotif;
 
-    private static final long PRICE_CHANGE_THRESHOLD = 50000; // $500 in cents
+    private static final long PRICE_CHANGE_THRESHOLD = 70000; // $500 in cents
     private static final int MINUTES_INTERVAL = 30;
 
     @Scheduled(fixedRate = 60000)
