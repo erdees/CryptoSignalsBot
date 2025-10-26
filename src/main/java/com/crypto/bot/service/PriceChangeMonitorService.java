@@ -57,11 +57,12 @@ public class PriceChangeMonitorService {
             double amount = Math.abs(diff) / 100.0;
 
             var message = String.format(
-                    "⚠️ %s has %s by $%.2f over the last %d minutes.",
+                    "⚠️ %s has %s by $%.2f over the last %d minutes, and now is $%d.",
                     symbolType,
                     direction,
                     amount,
-                    MINUTES_INTERVAL
+                    MINUTES_INTERVAL,
+                    newest / 100
             );
             LOGGER.info(message);
 
